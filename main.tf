@@ -104,10 +104,18 @@ resource "aws_route_table" "private_route_table" {
   }
 }
 
-# Create route table associations for public and private subnets
+# Create a route table associations for the public subnet
 resource "aws_route_table_association" "public" {
   depends_on     = [aws_subnet.public_subnets]
   route_table_id = aws_route_table.public_route_table.id
   for_each       = aws_subnet.public_subnets
+  subnet_id      = each.value.id
+}
+
+# Create a route table associations for the private subnet
+resource "aws_route_table_association" "private" {
+  depends_on     = [aws_subnet.private_subnets]
+  route_table_id = aws_route_table.private_route_table.id
+  for_each       = aws_subnet.private_subnets
   subnet_id      = each.value.id
 }
